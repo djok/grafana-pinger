@@ -63,7 +63,7 @@
 
 1. **Клонирай репозиторито**:
 ```bash
-git clone <repository-url>
+git clone https://github.com/djok/smokeping-docker.git
 cd smokeping-docker
 ```
 

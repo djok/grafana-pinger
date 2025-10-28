@@ -20,7 +20,7 @@ Docker image за Host Management API компонент на Network Monitoring
 
 ### С Docker Compose (препоръчително)
 
-Виж пълния stack на: https://github.com/YOUR_REPO/smokeping-docker
+Виж пълния stack на: https://github.com/djok/smokeping-docker
 
 ```yaml
 services:
@@ -200,8 +200,8 @@ healthcheck:
 
 ## Support
 
-- GitHub Issues: https://github.com/YOUR_REPO/smokeping-docker/issues
-- Full Documentation: https://github.com/YOUR_REPO/smokeping-docker
+- GitHub Issues: https://github.com/djok/smokeping-docker/issues
+- Full Documentation: https://github.com/djok/smokeping-docker
 
 ## License
 
