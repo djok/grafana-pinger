@@ -1,4 +1,9 @@
-# Network Monitoring Stack
+# 🔥 Grafana Pinger - Network Monitoring Stack
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/djok/grafana-pinger)](https://hub.docker.com/r/djok/grafana-pinger)
+[![GitHub Stars](https://img.shields.io/github/stars/djok/grafana-pinger)](https://github.com/djok/grafana-pinger)
+[![License](https://img.shields.io/github/license/djok/grafana-pinger)](LICENSE)
+[![Docker Image Size](https://img.shields.io/docker/image-size/djok/grafana-pinger)](https://hub.docker.com/r/djok/grafana-pinger)
 
 Модерен network monitoring stack с Grafana, Prometheus и Blackbox Exporter за мониториране на latency, jitter и packet loss на 100-500 хоста.
 
