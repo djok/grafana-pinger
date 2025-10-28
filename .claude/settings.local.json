@@ -21,7 +21,15 @@
       "Bash(docker image prune:*)",
       "Bash(docker tag:*)",
       "Bash(docker push:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh --version:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git push:*)",
+      "Bash(gh repo view:*)",
+      "Bash(git remote:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

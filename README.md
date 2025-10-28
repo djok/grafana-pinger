@@ -63,8 +63,8 @@
 
 1. **Клонирай репозиторито**:
 ```bash
-git clone https://github.com/djok/smokeping-docker.git
-cd smokeping-docker
+git clone https://github.com/djok/grafana-pinger.git
+cd grafana-pinger
 ```
 
 2. **Създай .env файл**:
@@ -304,20 +304,20 @@ docker-compose down -v
 
 ```bash
 # Backup на Prometheus данни
-docker run --rm -v smokeping-docker_prometheus-data:/data -v $(pwd):/backup alpine tar czf /backup/prometheus-backup.tar.gz /data
+docker run --rm -v grafana-pinger_prometheus-data:/data -v $(pwd):/backup alpine tar czf /backup/prometheus-backup.tar.gz /data
 
 # Backup на Grafana данни
-docker run --rm -v smokeping-docker_grafana-data:/data -v $(pwd):/backup alpine tar czf /backup/grafana-backup.tar.gz /data
+docker run --rm -v grafana-pinger_grafana-data:/data -v $(pwd):/backup alpine tar czf /backup/grafana-backup.tar.gz /data
 ```
 
 ### Restore на данни
 
 ```bash
 # Restore Prometheus
-docker run --rm -v smokeping-docker_prometheus-data:/data -v $(pwd):/backup alpine sh -c "cd /data && tar xzf /backup/prometheus-backup.tar.gz --strip 1"
+docker run --rm -v grafana-pinger_prometheus-data:/data -v $(pwd):/backup alpine sh -c "cd /data && tar xzf /backup/prometheus-backup.tar.gz --strip 1"
 
 # Restore Grafana
-docker run --rm -v smokeping-docker_grafana-data:/data -v $(pwd):/backup alpine sh -c "cd /data && tar xzf /backup/grafana-backup.tar.gz --strip 1"
+docker run --rm -v grafana-pinger_grafana-data:/data -v $(pwd):/backup alpine sh -c "cd /data && tar xzf /backup/grafana-backup.tar.gz --strip 1"
 ```
 
 ## 📈 Performance Tips
@@ -428,7 +428,7 @@ docker-compose logs grafana | grep -i dashboard
 ## 📝 Структура на проекта
 
 ```
-smokeping-docker/
+grafana-pinger/
 ├── docker-compose.yml          # Main stack configuration
 ├── .env.example                # Environment variables template
 ├── .dockerignore
@@ -480,7 +480,7 @@ docker-compose up -d
 docker-compose build host-api
 
 # Tag за DockerHub
-docker tag smokeping-docker-host-api:latest djok/grafana-pinger:latest
+docker tag grafana-pinger-host-api:latest djok/grafana-pinger:latest
 
 # Push to DockerHub
 docker push djok/grafana-pinger:latest

@@ -146,10 +146,10 @@ docker-compose logs -f
 
 ```bash
 # Backup Prometheus data
-docker run --rm -v smokeping-docker_prometheus-data:/data -v $(pwd):/backup alpine tar czf /backup/prometheus-backup.tar.gz -C /data .
+docker run --rm -v grafana-pinger_prometheus-data:/data -v $(pwd):/backup alpine tar czf /backup/prometheus-backup.tar.gz -C /data .
 
 # Backup Grafana data
-docker run --rm -v smokeping-docker_grafana-data:/data -v $(pwd):/backup alpine tar czf /backup/grafana-backup.tar.gz -C /data .
+docker run --rm -v grafana-pinger_grafana-data:/data -v $(pwd):/backup alpine tar czf /backup/grafana-backup.tar.gz -C /data .
 
 # Backup hosts configuration
 cp -r config/ config-backup/
@@ -159,10 +159,10 @@ cp -r config/ config-backup/
 
 ```bash
 # Restore Prometheus data
-docker run --rm -v smokeping-docker_prometheus-data:/data -v $(pwd):/backup alpine tar xzf /backup/prometheus-backup.tar.gz -C /data
+docker run --rm -v grafana-pinger_prometheus-data:/data -v $(pwd):/backup alpine tar xzf /backup/prometheus-backup.tar.gz -C /data
 
 # Restore Grafana data
-docker run --rm -v smokeping-docker_grafana-data:/data -v $(pwd):/backup alpine tar xzf /backup/grafana-backup.tar.gz -C /data
+docker run --rm -v grafana-pinger_grafana-data:/data -v $(pwd):/backup alpine tar xzf /backup/grafana-backup.tar.gz -C /data
 ```
 
 ## Troubleshooting

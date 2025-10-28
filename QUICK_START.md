@@ -77,10 +77,10 @@ curl -X POST http://localhost:5000/api/hosts \
 
 ```bash
 # Prometheus данни
-docker run --rm -v smokeping-docker_prometheus-data:/data -v $(pwd):/backup alpine tar czf /backup/prometheus-backup.tar.gz /data
+docker run --rm -v grafana-pinger_prometheus-data:/data -v $(pwd):/backup alpine tar czf /backup/prometheus-backup.tar.gz /data
 
 # Grafana данни
-docker run --rm -v smokeping-docker_grafana-data:/data -v $(pwd):/backup alpine tar czf /backup/grafana-backup.tar.gz /data
+docker run --rm -v grafana-pinger_grafana-data:/data -v $(pwd):/backup alpine tar czf /backup/grafana-backup.tar.gz /data
 ```
 
 ---
