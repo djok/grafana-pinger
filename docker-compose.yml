@@ -104,7 +104,8 @@ services:
     environment:
       - SERVER_DOMAIN=${SERVER_DOMAIN:-localhost}
     volumes:
-      - ./config/nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template:ro
+      - ./config/nginx/nginx.conf.template:/etc/nginx/nginx.conf.template:ro
+      - ./config/nginx/docker-entrypoint.sh:/docker-entrypoint.sh:ro
     networks:
       - monitoring
     ports:
@@ -112,6 +113,7 @@ services:
     depends_on:
       - grafana
       - host-api
+    command: ["/bin/sh", "/docker-entrypoint.sh"]
 
 networks:
   monitoring:
