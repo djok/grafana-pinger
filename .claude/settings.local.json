@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Read(//c/Users/RosenVelikov/.claude/**)",
+      "Bash(docker-compose build:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose logs:*)",
+      "Bash(docker-compose ps:*)",
+      "Bash(curl:*)",
+      "Bash(docker exec:*)",
+      "Bash(python3:*)",
+      "Bash(docker-compose down:*)",
+      "Bash(docker-compose exec:*)",
+      "Bash(timeout 35 bash -c \"sleep 35 && curl -s http://localhost:9090/api/v1/targets | python3 -c \"\"import sys, json; data=json.load(sys.stdin); targets=[t for t in data[''data''][''activeTargets''] if t[''scrapePool'']==''icmp-ping'']; print(f''Total icmp-ping targets: {len(targets)}''); [print(f\\\"\"{t[''labels''][''name'']} ({t[''labels''][''instance'']}) - {t[''health'']}\\\"\") for t in targets]\"\"\")",
+      "Bash(docker-compose restart:*)",
+      "Bash(docker-compose stop:*)",
+      "Bash(docker rmi:*)",
+      "Bash(docker-compose start:*)",
+      "Bash(docker-compose rm:*)",
+      "Bash(docker image prune:*)",
+      "Bash(docker tag:*)",
+      "Bash(docker push:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

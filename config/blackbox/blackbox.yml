@@ -1,0 +1,96 @@
+modules:
+  # ICMP Ping module - за latency и packet loss
+  icmp:
+    prober: icmp
+    timeout: 10s
+    icmp:
+      preferred_ip_protocol: "ip4"
+      source_ip_address: ""
+      payload_size: 56
+      dont_fragment: false
+      ttl: 64
+
+  # ICMP with IPv6 support
+  icmp_ipv6:
+    prober: icmp
+    timeout: 10s
+    icmp:
+      preferred_ip_protocol: "ip6"
+      source_ip_address: ""
+      payload_size: 56
+
+  # HTTP 2xx check
+  http_2xx:
+    prober: http
+    timeout: 10s
+    http:
+      valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+      valid_status_codes: []  # Defaults to 2xx
+      method: GET
+      headers:
+        User-Agent: "Blackbox Exporter"
+      no_follow_redirects: false
+      fail_if_ssl: false
+      fail_if_not_ssl: false
+      tls_config:
+        insecure_skip_verify: false
+
+  # HTTP POST check
+  http_post_2xx:
+    prober: http
+    timeout: 10s
+    http:
+      method: POST
+      headers:
+        Content-Type: application/json
+      body: '{}'
+
+  # TCP Connect check
+  tcp_connect:
+    prober: tcp
+    timeout: 10s
+    tcp:
+      preferred_ip_protocol: "ip4"
+
+  # DNS check
+  dns_check:
+    prober: dns
+    timeout: 10s
+    dns:
+      query_name: "www.google.com"
+      query_type: "A"
+      valid_rcodes:
+        - NOERROR
+      validate_answer_rrs:
+        fail_if_matches_regexp: []
+        fail_if_not_matches_regexp: []
+      validate_authority_rrs:
+        fail_if_matches_regexp: []
+        fail_if_not_matches_regexp: []
+      validate_additional_rrs:
+        fail_if_matches_regexp: []
+        fail_if_not_matches_regexp: []
+
+  # SSH Banner check
+  ssh_banner:
+    prober: tcp
+    timeout: 10s
+    tcp:
+      query_response:
+        - expect: "^SSH-2.0-"
+
+  # SMTP Starttls check
+  smtp_starttls:
+    prober: tcp
+    timeout: 10s
+    tcp:
+      query_response:
+        - expect: "^220 "
+        - send: "EHLO prober\r\n"
+        - expect: "^250-STARTTLS"
+        - send: "STARTTLS\r\n"
+        - expect: "^220"
+        - starttls: true
+        - send: "EHLO prober\r\n"
+        - expect: "^250-AUTH"
+        - send: "QUIT\r\n"

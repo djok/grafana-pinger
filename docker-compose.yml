@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.48.1
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=90d'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./config/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus-data:/prometheus
+      - targets-data:/targets:ro
+    networks:
+      - monitoring
+    ports:
+      - "9090:9090"
+    depends_on:
+      - blackbox-exporter
+      - host-api
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.24.0
+    container_name: blackbox-exporter
+    restart: unless-stopped
+    command:
+      - '--config.file=/config/blackbox.yml'
+    volumes:
+      - ./config/blackbox/blackbox.yml:/config/blackbox.yml:ro
+    networks:
+      - monitoring
+    ports:
+      - "9115:9115"
+    cap_add:
+      - NET_RAW
+
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: alertmanager
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    volumes:
+      - ./config/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager-data:/alertmanager
+    networks:
+      - monitoring
+    ports:
+      - "9093:9093"
+
+  host-api:
+    image: djok/grafana-pinger:latest
+    container_name: host-api
+    restart: unless-stopped
+    environment:
+      - TARGETS_DIR=/targets
+    volumes:
+      - targets-data:/targets
+    networks:
+      - monitoring
+    ports:
+      - "5000:5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  grafana:
+    image: grafana/grafana:10.2.3
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=${GRAFANA_ROOT_URL:-http://localhost}
+      - GF_INSTALL_PLUGINS=
+      # Allow iframe embedding for host management UI
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_PANELS_DISABLE_SANITIZE_HTML=true
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./config/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+      - host-api
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    restart: unless-stopped
+    environment:
+      - SERVER_DOMAIN=${SERVER_DOMAIN:-localhost}
+    volumes:
+      - ./config/nginx/nginx.conf.template:/etc/nginx/templates/nginx.conf.template:ro
+    networks:
+      - monitoring
+    ports:
+      - "80:80"
+    depends_on:
+      - grafana
+      - host-api
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus-data:
+  alertmanager-data:
+  grafana-data:
+  targets-data:

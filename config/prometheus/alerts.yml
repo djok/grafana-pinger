@@ -1,0 +1,73 @@
+groups:
+  - name: network_alerts
+    interval: 30s
+    rules:
+      # Host Down Alert
+      - alert: HostDown
+        expr: probe_success == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Host {{ $labels.instance }} is down"
+          description: "{{ $labels.instance }} has been unreachable for more than 2 minutes."
+
+      # High Latency Alert
+      - alert: HighLatency
+        expr: probe_duration_seconds > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency to {{ $labels.instance }}"
+          description: "{{ $labels.instance }} has latency > 500ms for more than 5 minutes. Current value: {{ $value }}s"
+
+      # Packet Loss Alert
+      - alert: PacketLoss
+        expr: (1 - rate(probe_success[5m])) * 100 > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Packet loss detected to {{ $labels.instance }}"
+          description: "{{ $labels.instance }} has > 10% packet loss over last 5 minutes."
+
+      # Very High Latency Alert
+      - alert: VeryHighLatency
+        expr: probe_duration_seconds > 1
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Very high latency to {{ $labels.instance }}"
+          description: "{{ $labels.instance }} has latency > 1s for more than 2 minutes. Current value: {{ $value }}s"
+
+      # HTTP Service Down
+      - alert: HTTPServiceDown
+        expr: probe_success{job="http-check"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "HTTP service {{ $labels.instance }} is down"
+          description: "{{ $labels.instance }} HTTP endpoint has been down for more than 2 minutes."
+
+      # SSL Certificate Expiry Warning
+      - alert: SSLCertificateExpirySoon
+        expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 30
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "SSL certificate expiring soon for {{ $labels.instance }}"
+          description: "SSL certificate for {{ $labels.instance }} will expire in less than 30 days."
+
+      # Blackbox Exporter Down
+      - alert: BlackboxExporterDown
+        expr: up{job="blackbox-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Blackbox Exporter is down"
+          description: "Blackbox Exporter has been down for more than 1 minute. All probes are affected."
